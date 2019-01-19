@@ -65,6 +65,7 @@ exports.requestHandler = function(request, response) {
   headers['Content-Type'] = 'text/json';
 
   var body = '';
+  var message = '';
 
   if (request.method === 'GET') {
     statusCode = 200;
@@ -83,9 +84,15 @@ exports.requestHandler = function(request, response) {
     request.on('data', (chunk) => {
       body += chunk;
     }).on('end', () => {
-      // console.log(body);
+
+      message = JSON.parse(body);
+      if (!message.username) {
+        message.username = 'anonymous';
+      }
+      if (message.text) {
+        obj.results.push(message);
+      }
       response.writeHead(statusCode, headers);
-      obj.results.push(JSON.parse(body));
       response.end(JSON.stringify(obj));
     });
   }

@@ -107,4 +107,55 @@ describe('Node Server Request Listener Function', function() {
     expect(res._ended).to.equal(true);
   });
 
+  it('Should properly add a different message to messages', function() {
+    var stubMsg = {
+      username: 'Bob',
+      text: 'Hello!'
+    };
+
+    var req = new stubs.request('/classes/messages', 'POST', stubMsg);
+    var res = new stubs.response();
+
+    handler.requestHandler(req, res);
+
+    var messages = JSON.parse(res._data).results;
+    expect(messages.length).to.equal(3);
+    expect(messages[messages.length - 1].username).to.equal('Bob');
+    expect(messages[messages.length - 1].text).to.equal('Hello!');
+  });
+
+  it('Should provide a default name if none is given', function() {
+    var stubMsg = {
+      username: '',
+      text: 'I do not have a username!'
+    };
+
+    var req = new stubs.request('/classes/messages', 'POST', stubMsg);
+    var res = new stubs.response();
+
+    handler.requestHandler(req, res);
+
+    var messages = JSON.parse(res._data).results;
+    expect(messages.length).to.equal(4);
+    expect(messages[messages.length - 1].username).to.equal('anonymous');
+    expect(messages[messages.length - 1].text).to.equal('I do not have a username!');
+  });
+
+  it('Should not post the message if no text is provided', function() {
+    var stubMsg = {
+      username: '',
+      text: ''
+    };
+
+    var req = new stubs.request('/classes/messages', 'POST', stubMsg);
+    var res = new stubs.response();
+
+    handler.requestHandler(req, res);
+
+    var messages = JSON.parse(res._data).results;
+    console.log(messages);
+    expect(messages.length).to.equal(4);
+    expect(messages[messages.length - 1].text).to.not.equal('');
+  });
+
 });
