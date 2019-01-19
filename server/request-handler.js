@@ -35,7 +35,7 @@ var defaultCorsHeaders = {
   'access-control-max-age': 10 // Seconds.
 };
 
-var requestHandler = function(request, response) {
+exports.requestHandler = function(request, response) {
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
 
   // The outgoing status.
@@ -90,5 +90,3 @@ var requestHandler = function(request, response) {
   // response.end(JSON.stringify({results: []}));
 
 };
-
-module.exports = requestHandler;
